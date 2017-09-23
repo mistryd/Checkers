@@ -10,7 +10,7 @@ enum Result {
 };
 
 enum TokenType {
-    black, red, kingBlack, kingRed, empty
+    black, red, kingBlack, kingRed, nothing
 };
 
 const int NUM_ROWS = 8, NUM_COLS = 8;
