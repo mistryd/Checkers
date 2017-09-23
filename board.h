@@ -37,7 +37,7 @@ public:
     TokenType typeAtLocation(int row, int col);
     
     // Returns player to move (1 for player 1, 2 for player 2)
-    int playerToMove() const;
+    Players playerToMove() const;
     
     // Makes move and returns result
 	Result makeMove(int originalCol, int originalRow, int finalCol, int finalRow); 

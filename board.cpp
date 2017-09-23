@@ -97,24 +97,75 @@ void Board::printBoard(ostream &os) const {
     return;
 }
 
-int Board::playerToMove() const {
+Players Board::playerToMove() const {
     
     if (nextPlayer_to_move == player1) {
-        return 1;
-    } else if (nextPlayer_to_move == player2) {
-        return 2;
+        return player1;
+    } else {
+        return player2;
     }
     
-    return -1;
 }
 
-Result Board::makeMove(int originalCol, int originalRow, int finalRow, int finalCol){
-	if (!inBounds(finalRow, finalCol)) {
+Result Board::makeMove(int originalCol, int originalRow, int finalCol, int finalRow) {
+	if (!inBounds(finalRow, finalCol) || board[finalRow][finalCol] != nothing) {
 		return illegalMove;
 	}
-
-	//if(playerToMove == player1 )
+    
+    TokenType token = board[originalRow][originalCol];
+    
+    if (playerToMove() == player1) {
+        if (token != black && token != kingBlack) {
+            return illegalMove;
+        }
+        
+        if (token == black) {
+            if (finalRow <= originalRow) {
+                return illegalMove;
+            }
+        
+        }
+        
+        if (originalCol == finalCol) {
+            return illegalMove;
+        }
+        
+        board[originalRow][originalCol] = nothing;
+        if (token == black) {
+            board[finalRow][finalCol] = black;
+        } else {
+            board[finalRow][finalCol] = kingBlack;
+        }
+        
+    } else {
+        if (token != red && token != kingRed) {
+            return illegalMove;
+        }
+        
+        if (token == red) {
+            if (finalRow >= originalRow) {
+                return illegalMove;
+            }
+        }
+        
+        if (originalCol == finalCol) {
+            return illegalMove;
+        }
+        
+        board[originalRow][originalCol] = nothing;
+        
+        if (token == red) {
+            board[finalRow][finalCol] = red;
+        } else {
+            board[finalRow][finalCol] = kingRed;
+        }
+    }
+    
+    
+    updateToMove();
+    return noResult;
 }
+
 Players Board::updateToMove() {
     Players oldPlayer = nextPlayer_to_move;
     
