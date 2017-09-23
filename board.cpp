@@ -97,3 +97,36 @@ void Board::printBoard(ostream &os) const {
     return;
 }
 
+int Board::playerToMove() const {
+    
+    if (nextPlayer_to_move == player1) {
+        return 1;
+    } else if (nextPlayer_to_move == player2) {
+        return 2;
+    }
+    
+    return -1;
+}
+
+Players Board::updateToMove() {
+    Players oldPlayer = nextPlayer_to_move;
+    
+    if (nextPlayer_to_move == player1) {
+        nextPlayer_to_move = player2;
+    } else if (nextPlayer_to_move == player2) {
+        nextPlayer_to_move = player1;
+    }
+    
+    return oldPlayer;
+}
+
+bool Board::inBounds(int row, int col) const {
+    if (row >= 0 && row < NUM_ROWS && col >= 0 && col < NUM_COLS) {
+        return true;
+    }
+    
+    return false;
+}
+
+
+

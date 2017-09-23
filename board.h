@@ -13,6 +13,10 @@ enum TokenType {
     black, red, kingBlack, kingRed, nothing
 };
 
+enum Players {
+    player1, player2
+};
+
 const int NUM_ROWS = 8, NUM_COLS = 8;
 
 const char BLACK = 'b', KINGBLACK = 'B', KINGRED = 'R', RED = 'r', NOTHING = ' ';
@@ -40,7 +44,7 @@ public:
 private:
     
     // Switches whos turn it is
-    TokenType updateToMove();
+    Players updateToMove();
     
     // Checks to see if row/col are in bounds of gameboard
     bool inBounds(int row, int col) const;
@@ -49,7 +53,7 @@ private:
     TokenType board[NUM_ROWS][NUM_COLS];
     
     // Variable to keep track of whose turn it is
-    TokenType nextPlayer_to_move;
+    Players nextPlayer_to_move;
 };
 
 #endif
