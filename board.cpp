@@ -108,7 +108,38 @@ Players Board::playerToMove() const {
 }
 
 Result Board::makeMove(int originalCol, int originalRow, int finalCol, int finalRow) {
-	if (!inBounds(finalRow, finalCol) || board[finalRow][finalCol] != nothing) {
+	
+    vector<vector<int>> possibilities = possibleMoves(originalCol, originalRow);
+    
+    vector<int> userInput = {finalRow, finalCol};
+    
+    for (int i = 0; i < possibilities.size(); i++) {
+        if (userInput == possibilities[i]) {
+            board[originalRow][originalCol] = nothing;
+            if (playerToMove() == player1) {
+                board[finalRow][finalCol] = black;
+                if (finalRow - originalRow == 2) {
+                    board[(finalRow + originalRow) / 2][(finalCol + originalCol) / 2] = nothing;
+                }
+                updateToMove();
+                return noResult;
+            } else {
+                board[finalRow][finalCol] = red;
+                updateToMove();
+
+                return noResult;
+            }
+        }
+    }
+    
+    
+    return illegalMove;
+    
+    
+
+    
+    
+    /*if (!inBounds(finalRow, finalCol) || board[finalRow][finalCol] != nothing) {
 		return illegalMove;
 	}
     
@@ -164,6 +195,7 @@ Result Board::makeMove(int originalCol, int originalRow, int finalCol, int final
     
     updateToMove();
     return noResult;
+     */
 }
 
 Players Board::updateToMove() {
@@ -184,6 +216,55 @@ bool Board::inBounds(int row, int col) const {
     }
     
     return false;
+}
+
+vector<vector<int>> Board::possibleMoves(int col, int row) {
+    vector<vector<int>> possible;
+    
+    if (playerToMove() == player1) {
+        if (board[row][col] == black) {
+            if (inBounds(row + 1, col + 1) && board[row + 1][col + 1] == nothing) {
+                possible.push_back({row + 1, col + 1});
+            }
+            if (inBounds(row + 1, col - 1) && board[row + 1][col - 1] == nothing) {
+                possible.push_back({row + 1, col - 1});
+            }
+            if (inBounds(row + 2, col + 2) && (board[row + 1][col + 1] == red || board[row + 1][col + 1] == kingRed) && board[row + 2][col + 2] == nothing) {
+                possible.clear();
+                possible.push_back({row + 2, col + 2});
+            }
+            if (inBounds(row + 2, col - 2) && (board[row + 1][col - 1] == red || board[row + 1][col - 1] == kingRed) && board[row + 2][col - 2] == nothing) {
+                string move;
+                possible.push_back({row + 2, col - 2});
+            }
+            return possible;
+        }
+        
+
+    }
+    
+    if (playerToMove() == player2) {
+        if (board[row][col] == red) {
+            if (inBounds(row - 1, col + 1) && board[row - 1][col + 1] == nothing) {
+                possible.push_back({row - 1, col + 1});
+            }
+            if (inBounds(row - 1, col - 1) && board[row - 1][col - 1] == nothing) {
+                possible.push_back({row - 1, col - 1});
+            }
+            if (inBounds(row - 2, col + 2) && (board[row - 1][col + 1] == red || board[row - 1][col + 1] == kingRed) && board[row - 2][col + 2] == nothing) {
+                possible.clear();
+                possible.push_back({row - 2, col + 2});
+            }
+            if (inBounds(row - 2, col - 2) && (board[row - 1][col - 1] == red || board[row - 1][col - 1] == kingRed) && board[row - 2][col - 2] == nothing) {
+                string move;
+                possible.push_back({row - 2, col - 2});
+            }
+            return possible;
+        }
+
+    }
+    
+    return possible;
 }
 
 
