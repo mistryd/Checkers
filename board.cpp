@@ -108,23 +108,90 @@ Players Board::playerToMove() const {
 }
 
 Result Board::makeMove(int originalCol, int originalRow, int finalCol, int finalRow) {
-	
-    vector<vector<int>> possibilities = possibleMoves(originalCol, originalRow);
+    vector<vector<int>> startingPointForJump;
+    vector<vector<int>> possibilities = possibleMoves(originalCol, originalRow, startingPointForJump);
     
-    vector<int> userInput = {finalRow, finalCol};
+    vector<int> userInputOrig = {originalRow, originalCol};
+    vector<int> userInputFinal = {finalRow, finalCol};
     
     for (int i = 0; i < possibilities.size(); i++) {
-        if (userInput == possibilities[i]) {
-            board[originalRow][originalCol] = nothing;
+        if (userInputFinal == possibilities[i]) {
+            TokenType originalPlayer = board[originalRow][originalCol];
+            
             if (playerToMove() == player1) {
-                board[finalRow][finalCol] = black;
-                if (finalRow - originalRow == 2) {
-                    board[(finalRow + originalRow) / 2][(finalCol + originalCol) / 2] = nothing;
+                if (startingPointForJump.size() > 0) {
+                    for (int i = 0; i < startingPointForJump.size(); i++) {
+                        if ((abs(finalRow - originalRow) == 2) && (startingPointForJump[i] ==   userInputOrig)) {
+                            board[originalRow][originalCol] = nothing;
+                            if (originalPlayer == kingBlack) {
+                                board[finalRow][finalCol] = kingBlack;
+                            } else {
+                                board[finalRow][finalCol] = black;
+                            }
+
+                            board[(finalRow + originalRow) / 2][(finalCol + originalCol) / 2] = nothing;
+                            updateToMove();
+                            return noResult;
+                        }
+                        
+                    }
+                    
+                    return illegalMove;
                 }
+                
+                board[originalRow][originalCol] = nothing;
+                
+                if (originalPlayer == kingBlack) {
+                    board[finalRow][finalCol] = kingBlack;
+                } else {
+                    board[finalRow][finalCol] = black;
+                }
+                
+                
+                if (finalRow == 7) {
+                    board[finalRow][finalCol] = kingBlack;
+                }
+                
                 updateToMove();
                 return noResult;
             } else {
-                board[finalRow][finalCol] = red;
+                
+                if (startingPointForJump.size() > 0) {
+                    for (int i = 0; i < startingPointForJump.size(); i++) {
+                        if ((abs(finalRow - originalRow) == 2) && (startingPointForJump[i] == userInputOrig)) {
+                            
+                            board[originalRow][originalCol] = nothing;
+                            
+                            if (originalPlayer == kingRed) {
+                                board[finalRow][finalCol] = kingRed;
+                            } else {
+                                board[finalRow][finalCol] = red;
+                            }
+                            
+                            board[(finalRow + originalRow) / 2][(finalCol + originalCol) / 2] = nothing;
+                            updateToMove();
+                            return noResult;
+                        }
+                        
+                    }
+                    
+                    return illegalMove;
+                }
+                
+                board[originalRow][originalCol] = nothing;
+                
+                if (originalPlayer == kingRed) {
+                    board[finalRow][finalCol] = kingRed;
+                } else {
+                    board[finalRow][finalCol] = red;
+                }
+                
+                
+                if (finalRow == 0) {
+                    board[finalRow][finalCol] = kingRed;
+                }
+                
+                
                 updateToMove();
 
                 return noResult;
@@ -135,67 +202,6 @@ Result Board::makeMove(int originalCol, int originalRow, int finalCol, int final
     
     return illegalMove;
     
-    
-
-    
-    
-    /*if (!inBounds(finalRow, finalCol) || board[finalRow][finalCol] != nothing) {
-		return illegalMove;
-	}
-    
-    TokenType token = board[originalRow][originalCol];
-    
-    if (playerToMove() == player1) {
-        if (token != black && token != kingBlack) {
-            return illegalMove;
-        }
-        
-        if (token == black) {
-            if (finalRow <= originalRow) {
-                return illegalMove;
-            }
-        
-        }
-        
-        if (originalCol == finalCol) {
-            return illegalMove;
-        }
-        
-        board[originalRow][originalCol] = nothing;
-        if (token == black) {
-            board[finalRow][finalCol] = black;
-        } else {
-            board[finalRow][finalCol] = kingBlack;
-        }
-        
-    } else {
-        if (token != red && token != kingRed) {
-            return illegalMove;
-        }
-        
-        if (token == red) {
-            if (finalRow >= originalRow) {
-                return illegalMove;
-            }
-        }
-        
-        if (originalCol == finalCol) {
-            return illegalMove;
-        }
-        
-        board[originalRow][originalCol] = nothing;
-        
-        if (token == red) {
-            board[finalRow][finalCol] = red;
-        } else {
-            board[finalRow][finalCol] = kingRed;
-        }
-    }
-    
-    
-    updateToMove();
-    return noResult;
-     */
 }
 
 Players Board::updateToMove() {
@@ -218,11 +224,13 @@ bool Board::inBounds(int row, int col) const {
     return false;
 }
 
-vector<vector<int>> Board::possibleMoves(int col, int row) {
+vector<vector<int>> Board::possibleMoves(int col, int row, vector<vector<int>> &startingJumps) {
     vector<vector<int>> possible;
+    vector<vector<int>> jumpsOnly;
+    
     
     if (playerToMove() == player1) {
-        if (board[row][col] == black) {
+        if (board[row][col] == black || board[row][col] == kingBlack) {
             if (inBounds(row + 1, col + 1) && board[row + 1][col + 1] == nothing) {
                 possible.push_back({row + 1, col + 1});
             }
@@ -237,6 +245,45 @@ vector<vector<int>> Board::possibleMoves(int col, int row) {
                 string move;
                 possible.push_back({row + 2, col - 2});
             }
+            
+            if (board[row][col] == kingBlack) {
+                if (inBounds(row - 1, col + 1) && board[row - 1][col + 1] == nothing) {
+                    possible.push_back({row - 1, col + 1});
+                }
+                if (inBounds(row - 1, col - 1) && board[row - 1][col - 1] == nothing) {
+                    possible.push_back({row - 1, col - 1});
+                }
+                if (inBounds(row - 2, col + 2) && (board[row - 1][col + 1] == red || board[row - 1][col + 1] == kingRed) && board[row - 2][col + 2] == nothing) {
+                    possible.push_back({row - 2, col + 2});
+                }
+                if (inBounds(row - 2, col - 2) && (board[row - 1][col - 1] == red || board[row - 1][col - 1] == kingRed) && board[row - 2][col - 2] == nothing) {
+                    possible.push_back({row - 2, col - 2});
+                }
+
+            }
+            
+            
+            
+            for (int i = 0; i < NUM_ROWS; i++) {
+                for (int j = 0; j < NUM_COLS; j++) {
+                    if (board[i][j] == black) {
+                        if (inBounds(i + 2, j + 2) && (board[i + 1][j + 1] == red || board[i + 1][j + 1] == kingRed) && board[i + 2][j + 2] == nothing) {
+                            jumpsOnly.push_back({i + 2, j + 2});
+                            startingJumps.push_back({i, j});
+                        }
+                        if (inBounds(i + 2, j - 2) && (board[i + 1][j - 1] == red || board[i + 1][j - 1] == kingRed) && board[i + 2][j - 2] == nothing) {
+                            jumpsOnly.push_back({i + 2, j - 2});
+                            startingJumps.push_back({i, j});
+                        }
+                    }
+                }
+            }
+            
+            if (jumpsOnly.size() > 0) {
+                return jumpsOnly;
+            }
+            
+            
             return possible;
         }
         
@@ -244,21 +291,57 @@ vector<vector<int>> Board::possibleMoves(int col, int row) {
     }
     
     if (playerToMove() == player2) {
-        if (board[row][col] == red) {
+        if (board[row][col] == red || board[row][col] == kingRed) {
             if (inBounds(row - 1, col + 1) && board[row - 1][col + 1] == nothing) {
                 possible.push_back({row - 1, col + 1});
             }
             if (inBounds(row - 1, col - 1) && board[row - 1][col - 1] == nothing) {
                 possible.push_back({row - 1, col - 1});
             }
-            if (inBounds(row - 2, col + 2) && (board[row - 1][col + 1] == red || board[row - 1][col + 1] == kingRed) && board[row - 2][col + 2] == nothing) {
-                possible.clear();
+            if (inBounds(row - 2, col + 2) && (board[row - 1][col + 1] == black || board[row - 1][col + 1] == kingBlack) && board[row - 2][col + 2] == nothing) {
                 possible.push_back({row - 2, col + 2});
             }
-            if (inBounds(row - 2, col - 2) && (board[row - 1][col - 1] == red || board[row - 1][col - 1] == kingRed) && board[row - 2][col - 2] == nothing) {
-                string move;
+            if (inBounds(row - 2, col - 2) && (board[row - 1][col - 1] == black || board[row - 1][col - 1] == kingBlack) && board[row - 2][col - 2] == nothing) {
                 possible.push_back({row - 2, col - 2});
             }
+            
+            if (board[row][col] == kingRed) {
+                if (inBounds(row + 1, col + 1) && board[row + 1][col + 1] == nothing) {
+                    possible.push_back({row + 1, col + 1});
+                }
+                if (inBounds(row + 1, col - 1) && board[row + 1][col - 1] == nothing) {
+                    possible.push_back({row - 1, col - 1});
+                }
+                if (inBounds(row + 2, col + 2) && (board[row + 1][col + 1] == black || board[row + 1][col + 1] == kingBlack) && board[row + 2][col + 2] == nothing) {
+                    possible.push_back({row + 2, col + 2});
+                }
+                if (inBounds(row + 2, col - 2) && (board[row + 1][col - 1] == black || board[row + 1][col - 1] == kingBlack) && board[row + 2][col - 2] == nothing) {
+                    possible.push_back({row + 2, col - 2});
+                }
+            }
+            
+            
+            
+            for (int i = 0; i < NUM_ROWS; i++) {
+                for (int j = 0; j < NUM_COLS; j++) {
+                    if (board[i][j] == red) {
+                        if (inBounds(i - 2, j + 2) && (board[i - 1][j + 1] == black || board[i - 1][j + 1] == kingBlack) && board[i - 2][j + 2] == nothing) {
+                            jumpsOnly.push_back({i - 2, j + 2});
+                            startingJumps.push_back({i, j});
+                        }
+                        if (inBounds(i - 2, j - 2) && (board[i - 1][j - 1] == black || board[i - 1][j - 1] == kingBlack) && board[i - 2][j - 2] == nothing) {
+                            jumpsOnly.push_back({i - 2, j - 2});
+                            startingJumps.push_back({i, j});
+                        }
+                    }
+                }
+            }
+            
+            if (jumpsOnly.size() > 0) {
+                return jumpsOnly;
+            }
+            
+            
             return possible;
         }
 

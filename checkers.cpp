@@ -52,7 +52,13 @@ void consolePlay() {
         
         result = board.makeMove(originalCol, originalRow, finalCol, finalRow);
         
+        
+        
         board.printBoard(cout);
+        
+        if (result == illegalMove) {
+            cout << endl << "You have entered an illegal move, please try again" << endl;
+        }
     }
     
     

@@ -57,7 +57,7 @@ private:
     // Variable to keep track of whose turn it is
     Players nextPlayer_to_move;
     
-    vector<vector<int>> possibleMoves(int col, int row);
+    vector<vector<int>> possibleMoves(int col, int row, vector<vector<int>> &startingJumps);
 };
 
 #endif
