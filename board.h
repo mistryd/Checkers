@@ -15,7 +15,7 @@ enum TokenType {
 
 const int NUM_ROWS = 8, NUM_COLS = 8;
 
-const char BLACK = 'b', KINGBLACK = 'B', KINGRED = 'R', RED = 'r', EMPTY = ' ';
+const char BLACK = 'b', KINGBLACK = 'B', KINGRED = 'R', RED = 'r', NOTHING = ' ';
 
 
 class Board {
