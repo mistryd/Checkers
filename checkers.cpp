@@ -12,6 +12,8 @@ void consolePlay() {
     string selectionPieceToMove;
     string selectionWhereToMove;
     
+    int numBlack, numRed;
+    
     int originalRow, originalCol, finalRow, finalCol;
     
     Board board = getBoard(p1, p2);
@@ -52,12 +54,22 @@ void consolePlay() {
         
         result = board.makeMove(originalCol, originalRow, finalCol, finalRow);
         
+        board.numTokensByColor(numBlack, numRed);
         
+
         
         board.printBoard(cout);
         
         if (result == illegalMove) {
             cout << endl << "You have entered an illegal move, please try again" << endl;
+        }
+        
+        if (numBlack == 0) {
+            cout << p2 << " wins!";
+            return;
+        } else if (numRed == 0) {
+            cout << p1 << " wins!";
+            return;
         }
     }
     

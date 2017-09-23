@@ -130,6 +130,10 @@ Result Board::makeMove(int originalCol, int originalRow, int finalCol, int final
                             }
 
                             board[(finalRow + originalRow) / 2][(finalCol + originalCol) / 2] = nothing;
+                            
+                            if (finalRow == 7) {
+                                board[finalRow][finalCol] = kingBlack;
+                            }
                             updateToMove();
                             return noResult;
                         }
@@ -169,6 +173,11 @@ Result Board::makeMove(int originalCol, int originalRow, int finalCol, int final
                             }
                             
                             board[(finalRow + originalRow) / 2][(finalCol + originalCol) / 2] = nothing;
+                            
+                            if (finalRow == 0) {
+                                board[finalRow][finalCol] = kingRed;
+                            }
+                            
                             updateToMove();
                             return noResult;
                         }
@@ -266,7 +275,7 @@ vector<vector<int>> Board::possibleMoves(int col, int row, vector<vector<int>> &
             
             for (int i = 0; i < NUM_ROWS; i++) {
                 for (int j = 0; j < NUM_COLS; j++) {
-                    if (board[i][j] == black) {
+                    if (board[i][j] == black || board[i][j] == kingBlack) {
                         if (inBounds(i + 2, j + 2) && (board[i + 1][j + 1] == red || board[i + 1][j + 1] == kingRed) && board[i + 2][j + 2] == nothing) {
                             jumpsOnly.push_back({i + 2, j + 2});
                             startingJumps.push_back({i, j});
@@ -274,6 +283,18 @@ vector<vector<int>> Board::possibleMoves(int col, int row, vector<vector<int>> &
                         if (inBounds(i + 2, j - 2) && (board[i + 1][j - 1] == red || board[i + 1][j - 1] == kingRed) && board[i + 2][j - 2] == nothing) {
                             jumpsOnly.push_back({i + 2, j - 2});
                             startingJumps.push_back({i, j});
+                        }
+                        
+                        
+                        if (board[i][j] == kingBlack) {
+                            if (inBounds(i - 2, j + 2) && (board[i - 1][j + 1] == red || board[i - 1][j + 1] == kingRed) && board[i - 2][j + 2] == nothing) {
+                                jumpsOnly.push_back({i - 2, j + 2});
+                                startingJumps.push_back({i, j});
+                            }
+                            if (inBounds(i - 2, j - 2) && (board[i - 1][j - 1] == red || board[i - 1][j - 1] == kingRed) && board[i - 2][j - 2] == nothing) {
+                                jumpsOnly.push_back({i - 2, j - 2});
+                                startingJumps.push_back({i, j});
+                            }
                         }
                     }
                 }
@@ -310,7 +331,7 @@ vector<vector<int>> Board::possibleMoves(int col, int row, vector<vector<int>> &
                     possible.push_back({row + 1, col + 1});
                 }
                 if (inBounds(row + 1, col - 1) && board[row + 1][col - 1] == nothing) {
-                    possible.push_back({row - 1, col - 1});
+                    possible.push_back({row + 1, col - 1});
                 }
                 if (inBounds(row + 2, col + 2) && (board[row + 1][col + 1] == black || board[row + 1][col + 1] == kingBlack) && board[row + 2][col + 2] == nothing) {
                     possible.push_back({row + 2, col + 2});
@@ -324,7 +345,7 @@ vector<vector<int>> Board::possibleMoves(int col, int row, vector<vector<int>> &
             
             for (int i = 0; i < NUM_ROWS; i++) {
                 for (int j = 0; j < NUM_COLS; j++) {
-                    if (board[i][j] == red) {
+                    if (board[i][j] == red || board[i][j] == kingRed) {
                         if (inBounds(i - 2, j + 2) && (board[i - 1][j + 1] == black || board[i - 1][j + 1] == kingBlack) && board[i - 2][j + 2] == nothing) {
                             jumpsOnly.push_back({i - 2, j + 2});
                             startingJumps.push_back({i, j});
@@ -332,6 +353,18 @@ vector<vector<int>> Board::possibleMoves(int col, int row, vector<vector<int>> &
                         if (inBounds(i - 2, j - 2) && (board[i - 1][j - 1] == black || board[i - 1][j - 1] == kingBlack) && board[i - 2][j - 2] == nothing) {
                             jumpsOnly.push_back({i - 2, j - 2});
                             startingJumps.push_back({i, j});
+                        }
+                        
+                        
+                        if (board[i][j] == kingRed) {
+                            if (inBounds(i + 2, j + 2) && (board[i + 1][j + 1] == black || board[i + 1][j + 1] == kingBlack) && board[i + 2][j + 2] == nothing) {
+                                jumpsOnly.push_back({i + 2, j + 2});
+                                startingJumps.push_back({i, j});
+                            }
+                            if (inBounds(i + 2, j - 2) && (board[i + 1][j - 1] == black || board[i + 1][j - 1] == kingBlack) && board[i + 2][j - 2] == nothing) {
+                                jumpsOnly.push_back({i + 2, j - 2});
+                                startingJumps.push_back({i, j});
+                            }
                         }
                     }
                 }
@@ -348,6 +381,19 @@ vector<vector<int>> Board::possibleMoves(int col, int row, vector<vector<int>> &
     }
     
     return possible;
+}
+
+void Board::numTokensByColor(int &numBlack, int &numRed) {
+    numBlack = 0, numRed = 0;
+    for (int i = 0; i < NUM_ROWS; i++) {
+        for (int j = 0; j < NUM_COLS; j++) {
+            if (board[i][j] == black || board[i][j] == kingBlack) {
+                numBlack++;
+            } else if (board[i][j] == red || board[i][j] == kingRed) {
+                numRed++;
+            }
+        }
+    }
 }
 
 

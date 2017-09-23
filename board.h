@@ -41,7 +41,10 @@ public:
     Players playerToMove() const;
     
     // Makes move and returns result
-	Result makeMove(int originalCol, int originalRow, int finalCol, int finalRow); 
+	Result makeMove(int originalCol, int originalRow, int finalCol, int finalRow);
+    
+    void numTokensByColor(int &numBlack, int &numRed);
+
     
 private:
     
@@ -58,6 +61,7 @@ private:
     Players nextPlayer_to_move;
     
     vector<vector<int>> possibleMoves(int col, int row, vector<vector<int>> &startingJumps);
+    
 };
 
 #endif
