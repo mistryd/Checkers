@@ -108,6 +108,13 @@ int Board::playerToMove() const {
     return -1;
 }
 
+Result Board::makeMove(int originalCol, int originalRow, int finalRow, int finalCol){
+	if (!inBounds(finalRow, finalCol)) {
+		return illegalMove;
+	}
+
+	//if(playerToMove == player1 )
+}
 Players Board::updateToMove() {
     Players oldPlayer = nextPlayer_to_move;
     

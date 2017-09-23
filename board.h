@@ -2,6 +2,7 @@
 #define BOARD_H__
 
 #include <ostream>
+#include <string>
 using namespace std;
 
 
@@ -39,7 +40,7 @@ public:
     int playerToMove() const;
     
     // Makes move and returns result
-    Result makeMove(int col);
+	Result makeMove(int originalCol, int originalRow, int finalCol, int finalRow); 
     
 private:
     
