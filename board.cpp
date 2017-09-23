@@ -1,8 +1,13 @@
+#include "board.h"
 
-//hi
+using namespace std;
 
+Board::Board() {
 
+	for (int i = 0; i < NUM_ROWS; i++) {
+		for (int j = 0; j < NUM_COLS; j++) {
 
-
-
-//hi
+			board[i][j] = empty;
+		}
+	}
+}
