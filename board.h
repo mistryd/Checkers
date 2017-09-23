@@ -44,7 +44,12 @@ public:
 	Result makeMove(int originalCol, int originalRow, int finalCol, int finalRow);
     
     void numTokensByColor(int &numBlack, int &numRed);
+    
+    void assignOldGraphics(int row, int col);
 
+    void assignFinalGraphics(int row, int col);
+    
+    bool isOldAndNewAssignedGraphics();
     
 private:
     

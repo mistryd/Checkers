@@ -2,6 +2,8 @@
 
 using namespace std;
 
+int oldRowGraphics = 100, oldColGraphics = 100, finalRowGraphics = 100, finalColGraphics = 100;
+
 Board::Board() {
     for (int i = 0; i < NUM_COLS; i++) {
         if (i % 2 == 0) {
@@ -396,5 +398,30 @@ void Board::numTokensByColor(int &numBlack, int &numRed) {
     }
 }
 
+void Board::assignOldGraphics(int row, int col) {
+    oldRowGraphics = row;
+    oldColGraphics = col;
+    
+    if (isOldAndNewAssignedGraphics()) {
+        makeMove(oldColGraphics, oldRowGraphics, finalColGraphics, finalRowGraphics);
+    }
+}
+
+void Board::assignFinalGraphics(int row, int col) {
+    finalColGraphics = col;
+    finalRowGraphics = row;
+    
+    if (isOldAndNewAssignedGraphics()) {
+        makeMove(oldColGraphics, oldRowGraphics, finalColGraphics, finalRowGraphics);
+    }
+}
+
+bool Board::isOldAndNewAssignedGraphics() {
+    if (oldColGraphics != 100 && oldRowGraphics != 100 && finalRowGraphics != 100 && finalColGraphics != 100) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 
