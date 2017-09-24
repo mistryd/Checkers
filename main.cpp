@@ -8,8 +8,10 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
     int selection;
-    cout << "1 for console, 2 for graphics: ";
+    cout << "1 for console, 2 for graphics: " << flush;
     cin >> selection;
+    cout << flush;
+    
     
     if (selection == 2) {
         graphicsPlay(argc, argv);

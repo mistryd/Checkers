@@ -79,9 +79,9 @@ void consolePlay() {
 
 Board getBoard(string &p1, string &p2) {
     cout << "Player 1, enter your name: " << flush;
-    getline(cin, p1);
+    cin >> p1;
     cout << endl << "Player 2, enter your name: " << flush;
-    getline(cin, p2);
+    cin >> p2;
     
     
     return Board();
